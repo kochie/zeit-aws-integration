@@ -1,0 +1,8 @@
+{
+  "name": "aws-now",
+  "version": 2,
+  "alias": ["aws-integration.now.sh"],
+  "builds": [{ "src": "src/**/*.ts", "use": "@now/node" }],
+  "routes": [{ "src": "/", "dest": "src/uihook/uihook.ts" }]
+}
+

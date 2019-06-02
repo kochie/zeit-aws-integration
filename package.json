@@ -1,0 +1,32 @@
+{
+  "name": "aws-now",
+  "version": "1.0.0",
+  "description": "A now.sh integration to create and manage aws resources.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "now dev -p 5005"
+  },
+  "keywords": [
+    "now.sh",
+    "aws",
+    "integration",
+    "dynamodb",
+    "neptune",
+    "S3"
+  ],
+  "author": "Robert Koch <robert@kochie.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@now/node": "^0.7.3",
+    "@types/node": "^12.0.4",
+    "jest": "^24.8.0",
+    "now": "^15.3.0",
+    "preact": "^8.4.2",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@zeit/integration-utils": "^0.6.1",
+    "aws-sdk": "^2.466.0"
+  }
+}

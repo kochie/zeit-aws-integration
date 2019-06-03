@@ -1,27 +1,43 @@
 import { ViewInfo, setAction, Action, navigate } from "./uihook";
 import { htm } from "@zeit/integration-utils";
-import { dashboard } from "./dashboard";
-import { createDynamoTable } from "../lib/createDynamoTable";
+import { createDynamoTable } from "../lib/DynamoTable";
 import { regions } from "../constants/regions";
-
-
+import { ResourceType, createResource } from "../lib/Item";
 
 export async function createDynamo(viewInfo: ViewInfo): Promise<string> {
     const { payload, zeitClient } = viewInfo
     const { clientState } = payload
     const metadata = await zeitClient.getMetadata()
+    const {accessKey, secretKey} = metadata
     const { dynamoTableName, dynamoTablePrimaryKeyType, dynamoTablePrimaryKey, dynamoTableRegion } = clientState
 
     if (!!dynamoTableName && !!dynamoTablePrimaryKeyType && !!dynamoTablePrimaryKey && !!dynamoTableRegion) {
         try {
-            await createDynamoTable({
+            const response = await createDynamoTable({
                 tableName: dynamoTableName,
                 primaryKey: dynamoTablePrimaryKey,
                 primaryKeyType: dynamoTablePrimaryKeyType,
                 region: dynamoTableRegion,
-                accessKey: metadata.accessKey,
-                secretKey: metadata.secretKey
+                accessKey,
+                secretKey
             })
+
+            const id = await createResource({
+                type: ResourceType.DYNAMO, 
+                name: dynamoTableName, 
+                region:dynamoTableRegion, 
+                arn:response.TableArn
+            }, viewInfo)
+
+            const metadata = await zeitClient.getMetadata()
+            
+            if (!metadata.dynamoList) {
+                metadata.dynamoList = {}
+            }
+
+            console.log("AHHAHA", id, metadata.dynamoList)
+            metadata.dynamoList[`${dynamoTableName}--${dynamoTableRegion}`] = id
+            await zeitClient.setMetadata(metadata)
             setAction(Action.Dashboard, viewInfo)
             return await navigate(viewInfo)
         } catch (error) {
@@ -65,7 +81,7 @@ export async function createDynamo(viewInfo: ViewInfo): Promise<string> {
             <Fieldset>
                 <FsContent>
                     <Select name="dynamoTableRegion" value="string" label="Region">
-                        ${regions.map(region => htm`<Option value="${region.value}" caption=${region.name} />`)}
+                        ${regions.filter(region => region.enabled).map(region => htm`<Option value="${region.value}" caption=${region.name} />`)}
                     </Select>
                 </FsContent>
                 <FsFooter>

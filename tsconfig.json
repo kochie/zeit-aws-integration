@@ -1,13 +1,11 @@
 {
     "compilerOptions": {
-        "outDir": "dist/",
         "resolveJsonModule": true,
-        "target": "es6",
+        "target": "es5",
         "moduleResolution": "node",
         "module": "commonjs",
         "lib": [
             "esnext"
         ]
-    },
-    "files": ["src/uihook/uihook.ts"]
+    }
 }

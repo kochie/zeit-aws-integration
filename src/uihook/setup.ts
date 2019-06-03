@@ -3,11 +3,7 @@ import { htm } from "@zeit/integration-utils";
 
 
 export async function setupView(viewInfo: ViewInfo): Promise<string> {
-    const { payload, zeitClient } = viewInfo;
-    const { action } = payload;
-    // if (action === "connect") {
-    //     return await connectToAWS(viewInfo)
-    // }
+    const { zeitClient } = viewInfo;
 
     const metadata = await zeitClient.getMetadata()
 

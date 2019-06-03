@@ -1,28 +1,22 @@
 import { ViewInfo, Action } from "./uihook";
 import { htm } from "@zeit/integration-utils";
-import { Table, HeaderItem, TableRow, BodyItem } from "../components/table";
-import { listDynamo } from "../components/listDynamo";
-import { listNeptune } from "../components/listNeptune";
+import { listDynamo } from "../components/DynamoList";
+import { listNeptune } from "../components/NeptuneList";
+import { listElasticache } from "../components/ElasticacheList";
+import { listRds } from "../components/RDSList";
 
 
 
 export async function dashboard(viewInfo: ViewInfo): Promise<string> {
-    const metadata = await viewInfo.zeitClient.getMetadata()
-    metadata.count = metadata.count || 0
-    metadata.count += 1
-
-    const urls = ['https://zeit.co', 'https://google.com']
-  
-    // Set metadata
-    await viewInfo.zeitClient.setMetadata(metadata)
     return htm`
     <Page>
-        <P>Counter: ${metadata.count}</P>
-        <Button action=${Action.Dashboard}>Count Me</Button>
         <Button action="${Action.Setup}">Edit Connection</Button>
+        <Button action="${Action.Reload}">Reload Databases</Button>
 
         ${await listDynamo(viewInfo)}
-        ${listNeptune()}
+        ${await listNeptune(viewInfo)}
+        ${await listElasticache(viewInfo)}
+        ${await listRds(viewInfo)}
     </Page>
     `
 }

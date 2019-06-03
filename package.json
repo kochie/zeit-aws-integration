@@ -26,7 +26,9 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "@types/uuid": "^3.4.4",
     "@zeit/integration-utils": "^0.6.1",
-    "aws-sdk": "^2.466.0"
+    "aws-sdk": "^2.466.0",
+    "uuid": "^3.3.2"
   }
 }
